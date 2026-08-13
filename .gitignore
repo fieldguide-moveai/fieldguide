@@ -1,4 +1,4 @@
-# Frontend
+﻿# Frontend
 fieldguide-FE/node_modules/
 fieldguide-FE/dist/
 fieldguide-FE/.env
@@ -7,6 +7,7 @@ fieldguide-FE/.env
 fieldguide-BE/build/
 fieldguide-BE/.gradle/
 fieldguide-BE/out/
+fieldguide-BE/.env
 
 # 공통
 .DS_Store
