@@ -5,6 +5,7 @@ import com.moveai.fieldguide_BE.domain.tacitreport.service.TacitReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.media.Content;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,7 +14,7 @@ public class TacitReportController {
 
     private final TacitReportService tacitReportService;
 
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public TacitReportResponse create(
             @RequestParam Long hubId,
             @RequestParam Long memberId,
