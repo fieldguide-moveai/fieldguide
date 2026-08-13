@@ -1,0 +1,6 @@
+{
+  "name": "카카오T트러커 현장지식 가이드",
+  "description": "화물 운송 기사(트러커)를 위한 실시간 현장지식(암묵지) 공유 및 맞춤 운송 가이드 프로토타입 앱",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

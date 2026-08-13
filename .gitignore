@@ -1,0 +1,14 @@
+# Frontend
+fieldguide-FE/node_modules/
+fieldguide-FE/dist/
+fieldguide-FE/.env
+
+# Backend
+fieldguide-BE/build/
+fieldguide-BE/.gradle/
+fieldguide-BE/out/
+
+# 공통
+.DS_Store
+*.log
+.idea/
