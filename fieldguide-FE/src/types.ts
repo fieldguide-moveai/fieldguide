@@ -122,3 +122,18 @@ export interface HubValidationResponse {
   response: 'agree' | 'disagree' | 'resolved' | string;
   submittedAt: string;
 }
+
+export type NotificationCategory = 'order' | 'operation' | 'report' | 'benefit' | 'general';
+export type NotificationIconType = 'order' | 'operation' | 'safety' | 'points' | 'coupon' | 'update' | 'reply';
+
+export interface AppNotification {
+  id: string;
+  category: NotificationCategory;
+  iconType: NotificationIconType;
+  title: string;
+  line1: string;
+  line2: string;
+  highlight?: string;
+  timestamp: string;
+  read: boolean;
+}

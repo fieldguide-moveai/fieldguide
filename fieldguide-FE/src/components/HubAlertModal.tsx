@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { submitValidation } from '../services/hubService';
 import { AlertTriangle, CheckCircle2, Info, ArrowRight, X } from 'lucide-react';
 
 export const HubAlertModal: React.FC = () => {
+  const navigate = useNavigate();
   const { hubAlertModal, closeHubAlert, addPoints } = useApp();
   const [submitting, setSubmitting] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
@@ -20,6 +22,7 @@ export const HubAlertModal: React.FC = () => {
         setSubmittedMessage(null);
         setSubmitting(false);
         closeHubAlert();
+        navigate('/home');
       }, 1200);
     } catch (err) {
       setSubmittedMessage('의견 제출 중 오류가 발생했습니다.');

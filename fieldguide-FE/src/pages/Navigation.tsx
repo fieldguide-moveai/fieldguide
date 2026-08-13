@@ -13,12 +13,24 @@ import {
   ArrowRight,
   Zap,
   CheckCircle2,
+  MapPin,
+  Flag,
 } from 'lucide-react';
+
+type StopKind = 'done' | 'active' | 'new' | 'upcoming' | 'final';
+
+const formatKoreanTime = (date: Date) => {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const period = hours < 12 ? '오전' : '오후';
+  const displayHour = hours % 12 === 0 ? 12 : hours % 12;
+  return `${period} ${displayHour}:${minutes.toString().padStart(2, '0')}`;
+};
 
 export const Navigation: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  const { currentOrder } = useApp();
+  const { currentOrder, waypoints, lastAddedWaypointId, clearLastAddedWaypoint } = useApp();
 
   const [returnOrders, setReturnOrders] = useState<Order[]>([]);
   const [showReturnModal, setShowReturnModal] = useState(false);
@@ -30,7 +42,33 @@ export const Navigation: React.FC = () => {
     });
   }, [orderId]);
 
+  useEffect(() => {
+    if (!lastAddedWaypointId) return;
+    const timer = setTimeout(() => clearLastAddedWaypoint(), 5000);
+    return () => clearTimeout(timer);
+  }, [lastAddedWaypointId, clearLastAddedWaypoint]);
+
   const topReturnOrder = returnOrders[0];
+  const newlyAddedWaypoint = waypoints.find((w) => w.id === lastAddedWaypointId) || null;
+
+  const routeStops = [
+    { key: 'origin', label: '출발지', kind: 'done' as const },
+    { key: 'base', label: currentOrder?.clientName || '1차 목적지', kind: 'active' as const },
+    ...waypoints.map((w) => ({
+      key: w.id,
+      label: w.clientName,
+      kind: (w.id === lastAddedWaypointId ? 'new' : 'upcoming') as StopKind,
+    })),
+    { key: 'final', label: '최종 목적지', kind: 'final' as const },
+  ];
+
+  const baseMinutes = 15;
+  const extraMinutes = waypoints.reduce((sum, w) => sum + Math.round(w.distanceKm * 1.8) + 10, 0);
+  const totalMinutes = baseMinutes + extraMinutes;
+  const durationLabel =
+    totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}시간 ${totalMinutes % 60}분` : `${totalMinutes}분`;
+  const totalDistanceKm = 6.2 + waypoints.reduce((sum, w) => sum + w.distanceKm, 0);
+  const arrivalLabel = formatKoreanTime(new Date(Date.now() + totalMinutes * 60000));
 
   return (
     <div className="relative h-screen w-full max-w-md mx-auto bg-[#0F172A] text-white flex flex-col justify-between overflow-hidden shadow-2xl">
@@ -65,6 +103,21 @@ export const Navigation: React.FC = () => {
           <circle cx="320" cy="180" r="8" fill="#EF4444" stroke="#FFFFFF" strokeWidth="3" />
           <circle cx="320" cy="180" r="16" fill="#EF4444" fillOpacity="0.2" className="animate-ping" />
 
+          {/* Newly Added Waypoint Segment (Backhaul Order Accepted) */}
+          {newlyAddedWaypoint && (
+            <>
+              <path
+                d="M 320 180 C 300 140, 290 110, 300 90"
+                stroke="#A855F7"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray="4 10"
+              />
+              <circle cx="300" cy="90" r="16" fill="#A855F7" fillOpacity="0.25" className="animate-ping" />
+              <circle cx="300" cy="90" r="8" fill="#A855F7" stroke="#FFFFFF" strokeWidth="3" />
+            </>
+          )}
+
           {/* Current Vehicle Position Pointer */}
           <g transform="translate(195, 520)">
             <circle cx="0" cy="0" r="22" fill="#2563EB" fillOpacity="0.25" className="animate-ping" />
@@ -83,6 +136,26 @@ export const Navigation: React.FC = () => {
         <div className="absolute bottom-48 left-10 text-[11px] font-bold text-gray-400 bg-slate-900/60 px-2 py-0.5 rounded backdrop-blur-xs">
           AA 냉동창고 1.8km
         </div>
+
+        {/* Newly Added Waypoint Label & Flag */}
+        {newlyAddedWaypoint && (
+          <div className="absolute top-36 right-20 flex flex-col items-end gap-1 z-10">
+            <Flag className="w-4 h-4 text-violet-300" fill="currentColor" />
+            <div className="text-[11px] font-bold text-violet-200 bg-slate-900/70 px-2 py-0.5 rounded backdrop-blur-xs whitespace-nowrap">
+              {newlyAddedWaypoint.clientName}
+            </div>
+          </div>
+        )}
+
+        {/* "경유지 추가됨" Tooltip */}
+        {newlyAddedWaypoint && (
+          <div className="absolute top-[30%] left-8 z-30 animate-fadeIn">
+            <div className="bg-violet-600 text-white text-[11px] font-bold pl-2.5 pr-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 border border-violet-400/50">
+              <MapPin className="w-3.5 h-3.5" />
+              경유지 추가됨
+            </div>
+          </div>
+        )}
 
         {/* Speed Limit & Current Speed Display */}
         <div className="absolute top-44 left-4 flex flex-col items-center gap-2">
@@ -224,9 +297,9 @@ export const Navigation: React.FC = () => {
             </button>
 
             <div className="text-center flex-1 px-2">
-              <div className="text-2xl font-black text-white tracking-tight">15 분</div>
+              <div className="text-2xl font-black text-white tracking-tight">{durationLabel}</div>
               <p className="text-xs text-gray-400 font-medium mt-0.5">
-                6.2 km • 오후 2:32 도착 예정
+                {totalDistanceKm.toFixed(1)} km • {arrivalLabel} 도착 예정
               </p>
             </div>
 
@@ -236,6 +309,42 @@ export const Navigation: React.FC = () => {
             >
               경로 옵션
             </button>
+          </div>
+
+          {/* Route Stops Stepper */}
+          <div className="flex items-start px-1">
+            {routeStops.map((stop, idx) => (
+              <React.Fragment key={stop.key}>
+                <div className="flex flex-col items-center gap-1 w-14 shrink-0">
+                  <span
+                    className={`w-4 h-4 rounded-full flex items-center justify-center border-2 shrink-0 ${
+                      stop.kind === 'done' || stop.kind === 'active'
+                        ? 'bg-[#2563EB] border-blue-300'
+                        : stop.kind === 'new'
+                        ? 'bg-violet-500 border-violet-300'
+                        : stop.kind === 'final'
+                        ? 'bg-transparent border-gray-500'
+                        : 'bg-slate-600 border-slate-400'
+                    }`}
+                  >
+                    {stop.kind === 'final' && <Flag className="w-2.5 h-2.5 text-gray-400" />}
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold text-center leading-tight ${
+                      stop.kind === 'new' ? 'text-violet-300' : stop.kind === 'final' ? 'text-gray-400' : 'text-gray-200'
+                    }`}
+                  >
+                    {stop.label}
+                  </span>
+                </div>
+                {idx < routeStops.length - 1 &&
+                  (routeStops[idx + 1].kind === 'new' ? (
+                    <div className="flex-1 border-t-2 border-dashed border-violet-400 mt-2 mx-0.5" />
+                  ) : (
+                    <div className="flex-1 h-0.5 bg-slate-700 mt-2 mx-0.5" />
+                  ))}
+              </React.Fragment>
+            ))}
           </div>
 
           {/* Destination Arrival Button */}

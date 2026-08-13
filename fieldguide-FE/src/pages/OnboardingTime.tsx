@@ -38,17 +38,16 @@ export const OnboardingTime: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8] flex flex-col justify-between w-full max-w-md mx-auto shadow-lg">
-      <div>
-        <MobileHeader
-          title="Onboarding"
-          step={4}
-          totalSteps={5}
-          showSkip
-          onSkip={() => navigate('/home')}
-        />
+    <div className="h-screen bg-[#F5F6F8] flex flex-col w-full max-w-md mx-auto shadow-lg overflow-hidden">
+      <MobileHeader
+        title="Onboarding"
+        step={4}
+        totalSteps={5}
+        showSkip
+        onSkip={() => navigate('/home')}
+      />
 
-        <main className="px-5 pt-6 pb-20">
+      <main className="flex-1 overflow-y-auto px-5 pt-6 pb-6">
           <div className="mb-6">
             <h2 className="text-xl font-bold text-[#1A2B5C] leading-snug">
               나에게 맞는<br />
@@ -120,10 +119,9 @@ export const OnboardingTime: React.FC = () => {
               30분 단위로 선택 가능합니다
             </p>
           </div>
-        </main>
-      </div>
+      </main>
 
-      <div className="p-4 bg-white border-t border-gray-100 sticky bottom-0">
+      <div className="p-4 bg-white border-t border-gray-100 shrink-0">
         <button
           onClick={handleComplete}
           disabled={submitting}
