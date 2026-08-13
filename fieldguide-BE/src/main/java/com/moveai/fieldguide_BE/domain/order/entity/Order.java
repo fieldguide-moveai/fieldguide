@@ -1,4 +1,4 @@
-package com.moveai.fieldguide_BE.domain.oder.entity;
+package com.moveai.fieldguide_BE.domain.order.entity;
 
 import com.moveai.fieldguide_BE.domain.hub.entity.Hub;
 import jakarta.persistence.*;
