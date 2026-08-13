@@ -1,4 +1,4 @@
-# Frontend
+﻿# Frontend
 fieldguide-FE/node_modules/
 fieldguide-FE/dist/
 fieldguide-FE/.env
@@ -12,3 +12,4 @@ fieldguide-BE/out/
 .DS_Store
 *.log
 .idea/
+.env
