@@ -105,11 +105,10 @@ export const VoiceReport: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8] flex flex-col justify-between w-full max-w-md mx-auto shadow-lg">
-      <div>
-        <MobileHeader title="현장 경험 남기기" showBack={true} />
+    <div className="h-screen bg-[#F5F6F8] flex flex-col w-full max-w-md mx-auto shadow-lg overflow-hidden">
+      <MobileHeader title="현장 경험 남기기" showBack={true} />
 
-        <main className="p-5 flex flex-col items-center pt-8 pb-24 text-center">
+      <main className="flex-1 overflow-y-auto p-5 flex flex-col items-center pt-8 pb-6 text-center">
           <h2 className="text-base text-gray-800 font-medium mb-12 leading-relaxed">
             다음 운송인에게도 도움이 될 현장 정보나<br />
             주의사항을 음성으로 알려주세요.
@@ -158,10 +157,10 @@ export const VoiceReport: React.FC = () => {
               개인 정보는 AI에 의해 자동으로 비식별 처리돼요.
             </p>
           </div>
-        </main>
-      </div>
+      </main>
 
-      <div className="p-4 pb-20 bg-white border-t border-gray-100 sticky bottom-0 z-30 shadow-md">
+      {/* Submit */}
+      <div className="p-4 bg-white border-t border-gray-100 shrink-0">
         <button
           onClick={handleSubmit}
           disabled={submitting}
