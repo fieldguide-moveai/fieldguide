@@ -20,7 +20,7 @@ public class Validation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "report_id")
@@ -44,9 +44,25 @@ public class Validation {
     @Column(name = "created_at", updatable = false, nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime createdAt;
 
+    @Builder
+    public Validation(
+            TacitReport report,
+            TacitKnowledge knowledge,
+            Member member,
+            String question
+    ) {
+        this.report = report;
+        this.knowledge = knowledge;
+        this.member = member;
+        this.question = question;
+    }
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul"));
     }
 
+    public void answer(String answer) {
+        this.answer = answer;
+    }
 }

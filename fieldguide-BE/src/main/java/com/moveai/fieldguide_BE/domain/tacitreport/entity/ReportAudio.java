@@ -30,6 +30,11 @@ public class ReportAudio {
     public ReportAudio(String audioData, String fileName, String contentType) {
         this.audioData = audioData;
     }
+
+    @Builder
+    public ReportAudio(String audioData) {
+        this.audioData = audioData;
+    }
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul"));

@@ -56,7 +56,13 @@ public class TacitReport {
         this.gptJson = gptJson;
         this.completenessStatus = completeness;
     }
-
+    public void updateAnalysis(
+            String gptJson,
+            CompletenessStatus completenessStatus
+    ) {
+        this.gptJson = gptJson;
+        this.completenessStatus = completenessStatus;
+    }
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul"));

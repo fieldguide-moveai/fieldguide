@@ -72,8 +72,74 @@ public class TacitKnowledge {
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private ZonedDateTime updatedAt;
 
+    @Builder
+    public TacitKnowledge(
+            Hub hub,
+            KnowledgeType type,
+            String topic,
+            String location,
+            ConditionInfo condition,
+            String content
+    ) {
+        this.hub = hub;
+        this.type = type;
+        this.topic = topic;
+        this.location = location;
+        this.condition = condition;
+        this.content = content;
+
+        this.supportCount = 1L;
+        this.conflictCount = 0L;
+        this.verificationStatus = VerificationsStatus.UNVERIFIED;
+    }
+
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime now =
+                LocalDateTime.now()
+                        .atZone(ZoneId.of("Asia/Seoul"));
+
+        this.createdAt = now;
+        this.updatedAt = now;
     }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt =
+                LocalDateTime.now()
+                        .atZone(ZoneId.of("Asia/Seoul"));
+    }
+
+    public void increaseSupport() {
+        this.supportCount++;
+
+        if (this.supportCount >= 2) {
+            this.verificationStatus = VerificationsStatus.VERIFIED;
+
+            if (this.verifiedAt == null) {
+                this.verifiedAt =
+                        ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+            }
+        }
+    }
+    public void increaseConflict() {
+        this.conflictCount++;
+
+        if (this.conflictCount >= 3) {
+            this.verificationStatus = VerificationsStatus.EXPIRED;
+        } else {
+            this.verificationStatus = VerificationsStatus.CONFLICT;
+        }
+    }
+//    support = 1
+//            → UNVERIFIED
+//
+//    support >= 2
+//            → VERIFIED
+//
+//            conflict = 1~2
+//            → CONFLICT
+//
+//    conflict >= 3
+//            → EXPIRED
 }
