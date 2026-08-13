@@ -1,41 +1,58 @@
-// TODO: 실제 API 연동 시 USE_MOCK을 false로 변경하고 주석 해제
-
-import { API_BASE_URL, mockDelay } from './config';
+import { API_BASE_URL } from './config';
 import { VoiceReportResult } from '../types';
 
-/**
- * [음성 제보 및 AI 자동 태깅 파이프라인 안내]
- * 본 함수는 브라우저 MediaRecorder API로 녹음된 오디오 바이너리(audioBlob)를
- * 서버 multipart/form-data로 전달하며, 백엔드에서 음성-텍스트 변환(STT) 및
- * 멀티모달 LLM/AI(Claude, Gemini 등)를 연동하여 현장 위험 태그 자동 추출,
- * 텍스트 요약 생성, 안전 기여 포인트(+100P) 지급을 일괄 처리합니다.
- */
 export async function submitVoiceReport(
-  hubId: string,
-  driverId: string,
+  // hubId: string,
+  // driverId: string,
   audioBlob: Blob
 ): Promise<VoiceReportResult> {
-  // ===== 실제 API 연동 시 아래 주석 해제 =====
-  // const formData = new FormData();
-  // formData.append('audio', audioBlob, 'report_recording.webm');
-  // formData.append('hubId', hubId);
-  // formData.append('driverId', driverId);
-  //
-  // const res = await fetch(`${API_BASE_URL}/reports/voice`, {
-  //   method: 'POST',
-  //   body: formData, // Multipart File Upload Header
-  // });
-  // if (!res.ok) throw new Error('음성 제보 및 AI 처리 실패');
-  // return await res.json(); // { reportId: '...', tags: [...], summary: '...', pointsEarned: 100 }
-  // ==========================================
 
-  await mockDelay(1500); // AI 음성 분석 및 STT + 요약 파이프라인 처리 시간 시뮬레이션
+  const formData = new FormData();
+
+  // 음성 파일을 multipart/form-data의 "file"로 추가
+  formData.append(
+    'file',
+    audioBlob,
+    'report_recording.webm'
+  );
+
+    // hubId는 항상 1
+  const hubId = 1;
+
+  // memberId는 1 ~ 20 중 랜덤
+  const memberId = Math.floor(Math.random() * 20) + 1;
+
+  // POST
+  // 예:
+  // http://localhost:8080/api/tacit-reports?hubId=1&memberId=2
+  const res = await fetch(
+    `${API_BASE_URL}/tacit-reports?hubId=${hubId}&memberId=${memberId}`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const errorText = await res.text();
+
+    console.error('BE 오류:', errorText);
+
+    throw new Error('음성 제보 등록 실패');
+  }
+
+  const text = await res.text();
+
+  console.log('🎤 BE 응답:', text);
 
   return {
     reportId: 'voice_rpt_' + Date.now(),
-    tags: ['야간위험', '조명불량', '진입주의', '회전반경'],
-    summary: 'B동 하역장 좌측 조명 꺼짐 및 야간 후진 진입 시 진입로 회전반경 좁아 충돌 위험 발생',
+    tags: [],
+    summary: text,
     pointsEarned: 100,
-    timestamp: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+    timestamp: new Date().toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
   };
 }

@@ -20,11 +20,15 @@ interface AppContextType {
   onboardingAnswers: OnboardingAnswers;
   currentOrder: Order | null;
   hubAlertModal: HubAlertModalState;
+  waypoints: Order[];
+  lastAddedWaypointId: string | null;
   setOnboardingAnswers: React.Dispatch<React.SetStateAction<OnboardingAnswers>>;
   setCurrentOrder: (order: Order | null) => void;
   addPoints: (pts: number) => void;
   openHubAlert: (modalState: Omit<HubAlertModalState, 'isOpen'>) => void;
   closeHubAlert: () => void;
+  addWaypoint: (order: Order) => void;
+  clearLastAddedWaypoint: () => void;
 }
 
 const defaultOnboardingAnswers: OnboardingAnswers = {
@@ -44,6 +48,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [todaySummary, setTodaySummary] = useState<TodaySummary>(MOCK_TODAY_SUMMARY);
   const [onboardingAnswers, setOnboardingAnswers] = useState<OnboardingAnswers>(defaultOnboardingAnswers);
   const [currentOrder, setCurrentOrder] = useState<Order | null>(MOCK_ORDERS[0]);
+  const [waypoints, setWaypoints] = useState<Order[]>([]);
+  const [lastAddedWaypointId, setLastAddedWaypointId] = useState<string | null>(null);
   const [hubAlertModal, setHubAlertModal] = useState<HubAlertModalState>({
     isOpen: false,
     type: 'operational',
@@ -66,6 +72,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setHubAlertModal(prev => ({ ...prev, isOpen: false }));
   };
 
+  const addWaypoint = (order: Order) => {
+    setWaypoints(prev => (prev.some(w => w.id === order.id) ? prev : [...prev, order]));
+    setLastAddedWaypointId(order.id);
+  };
+
+  const clearLastAddedWaypoint = () => {
+    setLastAddedWaypointId(null);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -74,11 +89,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         onboardingAnswers,
         currentOrder,
         hubAlertModal,
+        waypoints,
+        lastAddedWaypointId,
         setOnboardingAnswers,
         setCurrentOrder,
         addPoints,
         openHubAlert,
         closeHubAlert,
+        addWaypoint,
+        clearLastAddedWaypoint,
       }}
     >
       {children}

@@ -18,6 +18,8 @@ import { VoiceReport } from './pages/VoiceReport';
 import { VoiceReportComplete } from './pages/VoiceReportComplete';
 import { MyPage } from './pages/MyPage';
 import { NearbyOrdersPage } from './pages/NearbyOrdersPage';
+import { Notifications } from './pages/Notifications';
+import { TodayRunDetail } from './pages/TodayRunDetail';
 
 export default function App() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
               <Route path="/report/voice" element={<VoiceReport />} />
               <Route path="/report/complete" element={<VoiceReportComplete />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/today-summary" element={<TodayRunDetail />} />
 
               {/* Catch-all Fallback */}
               <Route path="*" element={<Navigate to="/home" replace />} />

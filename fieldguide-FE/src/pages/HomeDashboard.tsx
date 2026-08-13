@@ -10,7 +10,7 @@ import { ChevronRight, MapPin, Bell } from 'lucide-react';
 
 export const HomeDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { userInfo, openHubAlert } = useApp();
+  const { userInfo } = useApp();
 
   const [todaySummary, setTodaySummary] = useState<TodaySummary | null>(null);
   const [nearbyOrders, setNearbyOrders] = useState<Order[]>([]);
@@ -104,15 +104,7 @@ export const HomeDashboard: React.FC = () => {
           </div>
 
           <button
-            onClick={() =>
-              openHubAlert({
-                type: 'operational',
-                knowledgeId: 'kn_gimpo_op1',
-                hubName: 'AA 냉동창고 (김포)',
-                beforeText: '평균 대기시간 40분',
-                afterText: '실시간 대기 18분으로 감소',
-              })
-            }
+            onClick={() => navigate('/notifications')}
             className="relative p-2 text-white hover:bg-white/10 rounded-full transition-colors active:scale-95"
             title="알림 및 현장 정보"
           >
@@ -149,7 +141,9 @@ export const HomeDashboard: React.FC = () => {
                     </p>
                   </div>
                   <button
-                    onClick={() => navigate('/onboarding/result')}
+                    // 아무 곳으로도 이동하지 않는 버전 (필요 시 아래 줄로 교체)
+                    // onClick={() => {}}
+                    onClick={() => navigate('/today-summary')}
                     className="text-xs text-blue-600 font-semibold inline-flex items-center gap-0.5 hover:underline"
                   >
                     <span>자세히 보기</span>
