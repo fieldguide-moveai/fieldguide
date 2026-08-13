@@ -63,7 +63,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </button>
         ) : showNotification ? (
           <button
-            onClick={() => navigate('/return-orders')}
+            onClick={() => navigate('/notifications')}
             className="p-2 -mr-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors relative"
             aria-label="알림"
           >

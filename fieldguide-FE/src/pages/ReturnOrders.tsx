@@ -10,7 +10,7 @@ import { Sparkles, Route, Timer, CheckCircle2, AlertTriangle, ShieldAlert, Info 
 
 export const ReturnOrders: React.FC = () => {
   const navigate = useNavigate();
-  const { userInfo, setCurrentOrder } = useApp();
+  const { userInfo, addWaypoint } = useApp();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -42,8 +42,8 @@ export const ReturnOrders: React.FC = () => {
     setSubmittingId(order.id);
     try {
       await acceptOrder(order.id, userInfo.id);
-      setCurrentOrder(order);
-      navigate(`/order/${order.id}/site-info`);
+      addWaypoint(order);
+      navigate(-1);
     } catch (err: any) {
       alert('오더 수락 실패: ' + err.message);
     } finally {

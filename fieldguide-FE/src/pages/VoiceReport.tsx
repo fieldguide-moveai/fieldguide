@@ -10,7 +10,7 @@ export const VoiceReport: React.FC = () => {
   const { userInfo, currentOrder, addPoints } = useApp();
 
   const [isRecording, setIsRecording] = useState(true);
-  const [seconds, setSeconds] = useState(18);
+  const [seconds, setSeconds] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
 

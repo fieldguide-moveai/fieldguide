@@ -8,7 +8,6 @@ import {
   Sparkles,
   BookOpen,
   ClipboardList,
-  Mic,
   Gift,
   ChevronRight,
   Settings,
@@ -68,23 +67,12 @@ export const MyPage: React.FC = () => {
           </button>
 
           <button
-            onClick={() => navigate('/return-orders')}
+            onClick={() => navigate('/orders')}
             className="w-full p-4 flex items-center justify-between hover:bg-gray-50 text-left"
           >
             <div className="flex items-center gap-3">
               <ClipboardList className="w-4 h-4 text-[#1A2B5C]" />
               <span className="font-bold text-gray-800">추천 회차 오더 목록</span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
-          </button>
-
-          <button
-            onClick={() => navigate('/report/voice')}
-            className="w-full p-4 flex items-center justify-between hover:bg-gray-50 text-left"
-          >
-            <div className="flex items-center gap-3">
-              <Mic className="w-4 h-4 text-[#2E7D32]" />
-              <span className="font-bold text-gray-800">현장 Near Miss 음성 제보하기</span>
             </div>
             <ChevronRight className="w-4 h-4 text-gray-400" />
           </button>

@@ -1,11 +1,12 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 import { MobileHeader } from '../components/MobileHeader';
 import { Check, Lightbulb, Sparkles } from 'lucide-react';
 
 export const VoiceReportComplete: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const { openHubAlert } = useApp();
 
   const reportResult = location.state?.result || {
     pointsEarned: 100,
@@ -65,7 +66,15 @@ export const VoiceReportComplete: React.FC = () => {
 
       <div className="p-4 pb-20 bg-white border-t border-gray-100 sticky bottom-0 z-30 shadow-md">
         <button
-          onClick={() => navigate('/home')}
+          onClick={() =>
+            openHubAlert({
+              type: 'operational',
+              knowledgeId: 'kn_gimpo_op1',
+              hubName: 'AA 냉동창고 (김포)',
+              beforeText: '평균 대기시간 40분',
+              afterText: '실시간 대기시간 18분으로 감소',
+            })
+          }
           className="w-full h-14 bg-[#1A2B5C] text-white text-base font-bold rounded-xl shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center"
         >
           확인
