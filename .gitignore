@@ -12,3 +12,6 @@ fieldguide-BE/out/
 .DS_Store
 *.log
 .idea/
+.env
+fieldguide-BE/.gradle/
+fieldguide-BE/build/
