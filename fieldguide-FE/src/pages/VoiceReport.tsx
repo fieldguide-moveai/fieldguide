@@ -160,7 +160,7 @@ export const VoiceReport: React.FC = () => {
       </main>
 
       {/* Submit */}
-      <div className="p-4 bg-white border-t border-gray-100 shrink-0">
+      <div className="p-4 pb-20 bg-white border-t border-gray-100 shrink-0">
         <button
           onClick={handleSubmit}
           disabled={submitting}
