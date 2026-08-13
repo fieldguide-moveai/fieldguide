@@ -13,3 +13,5 @@ fieldguide-BE/out/
 *.log
 .idea/
 .env
+fieldguide-BE/.gradle/
+fieldguide-BE/build/
